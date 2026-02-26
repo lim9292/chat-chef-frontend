@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PrevButton from "../components/PrevButton";
 import InfoInput from "../components/InfoInput";
 import AddButton from "../components/AddButton";
@@ -20,15 +20,39 @@ const Info = () => {
       id,
       label: `ingredient-${id}`,
       text: "재료명",
-      value: ""
-    }
-    setIngredientList((prev) => [...prev, newItem])
+      value: "",
+    };
+    setIngredientList((prev) => [...prev, newItem]);
+  };
+
+  const handleChange = (data) => {
+    // 받아온 value값으로 재료 목록 업데이트
+    setIngredientList((prev) =>
+      prev.map((item) => (item.id === data.id ? data : item)),
+    );
   };
 
   const handleNext = () => {
     // 미션: chat페이지로 이동되게 기능 구현
     history("/chat");
   };
+
+  // useEffect 3가지 용법
+
+  // 1. 해당 컴포넌트에 존재하는 모든 state를 감시하여 state들이 변경이 일어날때 마다 실행
+  // useEffect(() => {
+  //   console.log("뭔가가 변경됐습니다!");
+  // });
+
+  // 2. 컴포넌트가 생성되는 딱 한번 실행
+  // useEffect(() => {
+  //   console.log("✅최초 실행입니다");
+  // }, []);
+
+  // 3. 특정 state가 변경이 일어났을때 실행
+  // useEffect(() => {
+  //   console.log("ingredientList", ingredientList);
+  // }, [ingredientList]);
 
   // view
   return (
@@ -52,7 +76,11 @@ const Info = () => {
             {/* START:input 영역 */}
             <div>
               {ingredientList.map((item) => (
-                <InfoInput key={item.id} content={item} />
+                <InfoInput
+                  key={item.id}
+                  content={item}
+                  onChange={handleChange}
+                />
               ))}
             </div>
             {/* END:input 영역 */}

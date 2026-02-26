@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 
-const InfoInput = ({ content }) => {
+const InfoInput = ({ content, onChange }) => {
   // logic
   const { label, text } = content;
 
   const [value, setValue] = useState("");
 
   const handleChange = (event) => {
-    console.log("🚀 ~ event:", event);
     const { value } = event.target;
+    onChange({ ...content, value });
     setValue(value);
   };
 
