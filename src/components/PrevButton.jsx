@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 const PrevButton = () => {
   // logic
-  const history = useNavigate()
+  const history = useNavigate();
 
   const hadlePrev = () => {
-    history(-1)
+    history(-1);
   };
 
   // view

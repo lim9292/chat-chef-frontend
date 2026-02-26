@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MessageBox from "../components/MessageBox";
 import PrevButton from "../components/PrevButton";
 import { MoonLoader } from "react-spinners";
 
-const Chat = () => {
+const Chat = ({ ingredientList }) => {
   // logic
+  const endpoint = process.env.REACT_APP_SERVER_ADDRESS;
 
   const [value, setValue] = useState("");
 
   // TODO: set함수 추가하기
-  const [messages] = useState([]); // chatGPT와 사용자의 대화 메시지 배열
-  const [isInfoLoading] = useState(false); // 최초 정보 요청시 로딩
-  const [isMessageLoading] = useState(true); // 사용자와 메시지 주고 받을때 로딩
+  const [messages, setMessages] = useState([]); // chatGPT와 사용자의 대화 메시지 배열
+
+  const [infoMessges, setInfoMessges] = useState([]); // 초기세팅 메시지
+
+  const [isInfoLoading, setIsInfoLoading] = useState(true); // 최초 정보 요청시 로딩
+  const [isMessageLoading] = useState(false); // 사용자와 메시지 주고 받을때 로딩
   const hadleChange = (event) => {
     const { value } = event.target;
     console.log("value==>", value);
@@ -22,6 +26,46 @@ const Chat = () => {
     event.preventDefault();
     console.log("메시지 보내기");
   };
+
+  const sendInfo = async () => {
+    setIsInfoLoading(true);
+    try {
+      // 초기 세팅 api 호출
+      const response = await fetch(`${endpoint}/recipe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ingredientList }),
+      });
+
+      // 응답데이터를 자바스크립트 객체로 변환
+      const result = await response.json();
+      console.log("🚀 ~ result:", result);
+
+      // 데이터가 잘 들어온 경우에만 실행 (데이터가 제대로 안들어온 경우엔 종료)
+      if (!result.data) return;
+
+      // 초기 2개 메시지 저장
+      const removeLastMessageList = result.data.filter(
+        (_, index, arr) => index !== arr.length - 1,
+      );
+
+      setInfoMessges(removeLastMessageList);
+
+      // 마지막 대화는 메시지박스에 저장
+      const { role, content } = result.data[result.data.length - 1];
+      setMessages((prev) => [...prev, { role, content }]);
+    } catch (error) {
+      console.error("🚀 ~ error:", error);
+    } finally {
+      setIsInfoLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // console.log("🚀 ingredientList:", ingredientList);
+    sendInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // view
   return (

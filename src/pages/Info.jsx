@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import PrevButton from "../components/PrevButton";
 import InfoInput from "../components/InfoInput";
 import AddButton from "../components/AddButton";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
 
-const Info = () => {
+const Info = ({ sendIngredientList }) => {
   // logic
   const history = useNavigate();
 
@@ -32,7 +32,15 @@ const Info = () => {
     );
   };
 
+  const handleDelete = (selectedId) => {
+    const filteredList = ingredientList.filter(
+      (item) => item.id !== selectedId,
+    );
+    setIngredientList(filteredList);
+  };
+
   const handleNext = () => {
+    sendIngredientList(ingredientList);
     // 미션: chat페이지로 이동되게 기능 구현
     history("/chat");
   };
@@ -80,6 +88,7 @@ const Info = () => {
                   key={item.id}
                   content={item}
                   onChange={handleChange}
+                  onDelete={handleDelete}
                 />
               ))}
             </div>

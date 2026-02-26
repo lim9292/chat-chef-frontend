@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   // logic
-  const history = useNavigate()
+  const history = useNavigate();
 
   const handleStart = () => {
     // 페이지 이동
-    history("/info")
+    history("/info");
   };
 
   // view
