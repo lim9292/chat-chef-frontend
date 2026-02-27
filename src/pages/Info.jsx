@@ -40,9 +40,23 @@ const Info = ({ sendIngredientList }) => {
   };
 
   const handleNext = () => {
-    sendIngredientList(ingredientList);
-    // 미션: chat페이지로 이동되게 기능 구현
-    history("/chat");
+    // 미션: 입력된 재료가 1개도 없는 경우 코드 실행막기 (return)
+    // 사용자 입력값이 있는 경우
+    const filteredList = ingredientList.filter(
+      (item) => item.value.trim() !== "",
+    );
+
+    if (filteredList.length) {
+      // 재료가 1개 이상
+      console.log("✅재료 입력 된경우");
+      sendIngredientList(ingredientList);
+      history("/chat");
+      return;
+    }
+
+    // 재료 입력이 안된 경우
+    console.log("❌재료 입력 안된경우");
+    alert("재료를 1개이상 입력해주세요!");
   };
 
   // useEffect 3가지 용법
